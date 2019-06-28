@@ -1,0 +1,135 @@
+PERL Debugger Help
+File Name: debugger_hlp.txt
+
+---------------------------------------------------------------------------------
+T               Stack trace.
+s [expr]        Single step [in expr].
+n [expr]        Next, steps over subroutine calls [in expr].
+<CR>            Repeat last n or s command.
+r               Return from current subroutine.
+c [line|sub]    Continue; optionally inserts a one-time-only breakpoint
+                at the specified position.
+l min+incr      List incr+1 lines starting at min.
+l min-max       List lines min through max.
+l line          List single line.
+l subname       List first window of lines from subroutine.
+l               List next window of lines.
+-               List previous window of lines.
+w [line]        List window around line.
+.               Return to the executed line.
+f filename      Switch to viewing filename. Must be loaded.
+/pattern/       Search forwards for pattern; final / is optional.
+?pattern?       Search backwards for pattern; final ? is optional.
+L               List all breakpoints and actions.
+S [[!]pattern]  List subroutine names [not] matching pattern.
+t               Toggle trace mode.
+t expr          Trace through execution of expr.
+b [line] [condition]
+                Set breakpoint; line defaults to the current execution line;
+                condition breaks if it evaluates to true, defaults to '1'.
+b subname [condition]
+                Set breakpoint at first line of subroutine.
+b load filename Set breakpoint on `require'ing the given file.
+b postpone subname [condition]
+                Set breakpoint at first line of subroutine after
+                it is compiled.
+b compile subname
+                Stop after the subroutine is compiled.
+d [line]        Delete the breakpoint for line.
+D               Delete all breakpoints.
+a [line] command
+                Set an action to be done before the line is executed.
+                Sequence is: check for breakpoint/watchpoint, print line
+                if necessary, do action, prompt user if necessary,
+                execute expression.
+A               Delete all actions.
+W expr          Add a global watch-expression.
+W               Delete all watch-expressions.
+V [pkg [vars]]  List some (default all) variables in package (default current).
+                Use ~pattern and !pattern for positive and negative regexps.
+X [vars]        Same as "V currentpackage [vars]".
+x expr          Evals expression in array context, dumps the result.
+m expr          Evals expression in array context, prints methods callable
+                on the first element of the result.
+m class         Prints methods callable via the given class.
+O [opt[=val]] [opt"val"] [opt?]...
+                Set or query values of options.  val defaults to 1.  opt can
+                be abbreviated.  Several options can be listed.
+    recallCommand, ShellBang:   chars used to recall command or spawn shell;
+    pager:                      program for output of "|cmd";
+    tkRunning:                  run Tk while prompting (with ReadLine);
+    signalLevel warnLevel dieLevel:     level of verbosity;
+    inhibit_exit                Allows stepping off the end of the script.
+    ImmediateStop               Debugger should stop as early as possible.
+  The following options affect what happens with V, X, and x commands:
+    arrayDepth, hashDepth:      print only first N elements ('' for all);
+    compactDump, veryCompact:   change style of array and hash dump;
+    globPrint:                  whether to print contents of globs;
+    DumpDBFiles:                dump arrays holding debugged files;
+    DumpPackages:               dump symbol tables of packages;
+    DumpReused:         dump contents of "reused" addresses;
+    quote, HighBit, undefPrint: change style of string dump;
+    bareStringify:              Do not print the overload-stringified value;
+  Option PrintRet affects printing of return value after r command,
+         frame    affects printing messages on entry and exit from subroutines.
+         AutoTrace affects printing messages on every possible breaking point.
+         maxTraceLen gives maximal length of evals/args listed in stack trace.
+         ornaments affects screen appearance of the command line.
+                During startup options are initialized from $ENV{PERLDB_OPTS}.
+                You can put additional initialization options TTY, noTTY,
+                ReadLine, and NonStop there (or use `R' after you set them).
+< expr          Define Perl command to run before each prompt.
+<< expr         Add to the list of Perl commands to run before each prompt.
+> expr          Define Perl command to run after each prompt.
+>> expr Add to the list of Perl commands to run after each prompt.
+{ db_command    Define debugger command to run before each prompt.
+{{ db_command   Add to the list of debugger commands to run before each prompt.
+! number        Redo a previous command (default previous command).
+! -number       Redo number'th-to-last command.
+! pattern       Redo last command that started with pattern.
+                See 'O recallCommand' too.
+!! cmd          Run cmd in a subprocess (reads from DB::IN, writes to DB::OUT)
+                See 'O shellBang' too.
+H -number       Display last number commands (default all).
+p expr          Same as "print {DB::OUT} expr" in current package.
+|dbcmd          Run debugger command, piping DB::OUT to current pager.
+||dbcmd         Same as |dbcmd but DB::OUT is temporarilly select()ed as well.
+= [alias value] Define a command alias, or list current aliases.
+command         Execute as a perl statement in current package.
+v               Show versions of loaded modules.
+R               Pure-man-restart of debugger, some of debugger state
+                and command-line options may be lost.
+                Currently the following setting are preserved:
+                history, breakpoints and actions, debugger Options
+                and the following command-line options: -w, -I, -e.
+h [db_command]  Get help [on a specific debugger command], enter |h to page.
+h h             Summary of debugger commands.
+q or ^D         Quit. Set $DB::finished = 0 to debug global destruction.
+
+
+---------------------------------------------------------------------------------
+List/search source lines:               Control script execution:
+  l [ln|sub]  List source code            T           Stack trace
+  - or .      List previous/current line  s [expr]    Single step [in expr]
+  w [line]    List around line            n [expr]    Next, steps over subs
+  f filename  View source in file         <CR>        Repeat last n or s
+  /pattern/ ?patt?   Search forw/backw    r           Return from subroutine
+  v           Show versions of modules    c [ln|sub]  Continue until position
+Debugger controls:                        L           List break/watch/actions
+  O [...]     Set debugger options        t [expr]    Toggle trace [trace expr]
+  <[<] or {[{] [cmd]   Do before prompt   b [ln|event] [cnd]  Set breakpoint
+  >[>] [cmd]  Do after prompt             b sub [cnd] Set breakpoint for sub
+  ! [N|pat]   Redo a previous command     d [ln] or D Delete a/all breakpoints
+  H [-num]    Display last num commands   a [ln] cmd  Do cmd before line
+  = [a val]   Define/list an alias        W expr      Add a watch expression
+  h [db_cmd]  Get help on command         A or W      Delete all actions/watch
+  |[|]dbcmd   Send output to pager        ![!] syscmd Run cmd in a subprocess
+  q or ^D     Quit                        R           Attempt a restart
+Data Examination:             expr     Execute perl code, also see: s,n,t expr
+  x|m expr      Evals expr in array context, dumps the result or lists methods.
+  p expr        Print expression (uses script's current package).
+  S [[!]pat]    List subroutine names [not] matching pattern
+  V [Pk [Vars]] List Variables in Package.  Vars can be ~pattern or !pattern.
+  X [Vars]      Same as "V current_package [Vars]".
+  
+--------------------------------------------------------------------------------- 
